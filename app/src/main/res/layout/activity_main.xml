@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#1a1a2e">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 标题 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔍 WiFi 信息检测器"
+            android:textSize="24sp"
+            android:textColor="#e94560"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="用于验证 WifiSpoof 模块是否生效"
+            android:textSize="12sp"
+            android:textColor="#aaaaaa"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- App层API -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📱 App层API (WifiManager)"
+                android:textSize="16sp"
+                android:textColor="#0f3460"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_ssid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SSID: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_bssid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BSSID: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_mac"
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                android:text="MAC: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_ip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="IP: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_network_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="网络ID: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_rssi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="信号强度: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_link_speed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="连接速度: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_app_frequency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="频率: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"/>
+        </LinearLayout>
+
+        <!-- Java层 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="☕ Java层 (NetworkInterface)"
+                android:textSize="16sp"
+                android:textColor="#0f3460"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_java_mac"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MAC: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_java_ipv4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="IPv4: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_java_ipv6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="IPv6: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"/>
+        </LinearLayout>
+
+        <!-- 系统属性 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚙️ 系统属性"
+                android:textSize="16sp"
+                android:textColor="#0f3460"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_sys_mac"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="sysfs MAC: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_sys_interface"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WiFi接口: 加载中..."
+                android:textSize="14sp"
+                android:textColor="#333333"/>
+        </LinearLayout>
+
+        <!-- 验证状态 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg_status"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✅ 验证状态"
+                android:textSize="16sp"
+                android:textColor="#0f3460"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="检测中..."
+                android:textSize="14sp"
+                android:textColor="#333333"/>
+        </LinearLayout>
+
+        <!-- 刷新按钮 -->
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="🔄 刷新检测"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#e94560"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.WifiDetector" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#e94560</item>
+        <item name="colorPrimaryVariant">#c73e54</item>
+        <item name="colorOnPrimary">#ffffff</item>
+        <item name="colorSecondary">#0f3460</item>
+        <item name="colorSecondaryVariant">#0a2647</item>
+        <item name="colorOnSecondary">#ffffff</item>
+        <item name="android:statusBarColor">#1a1a2e</item>
+    </style>
+</resources>
