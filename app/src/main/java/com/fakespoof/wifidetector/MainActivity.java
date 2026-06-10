@@ -200,10 +200,15 @@ public class MainActivity extends AppCompatActivity {
             // 频率
             tvAppFrequency.setText("频率: " + wifiInfo.getFrequency() + " MHz");
 
+            // 调试日志
+            android.util.Log.d("WifiDetector",
+                "App层结果: SSID=" + ssid + " BSSID=" + bssid + " MAC=" + mac + " IP=" + ip);
+
         } catch (Exception e) {
             tvAppSsid.setText("SSID: ❌ 错误: " + e.getMessage());
             tvAppBssid.setText("BSSID: ❌ 错误");
             tvAppMac.setText("MAC: ❌ 错误");
+            android.util.Log.e("WifiDetector", "App层获取失败", e);
         }
     }
 
@@ -332,82 +337,66 @@ public class MainActivity extends AppCompatActivity {
         String ssid = tvAppSsid.getText().toString().replace("SSID: ", "");
         String bssid = tvAppBssid.getText().toString().replace("BSSID: ", "");
         String mac = tvAppMac.getText().toString().replace("MAC: ", "");
+        String ip = tvAppIp.getText().toString().replace("IP: ", "");
         String sysMac = tvSysMac.getText().toString().replace("sysfs MAC: ", "");
 
         // 检查 SSID
-        if (ssid.equals(PLACEHOLDER_SSID) || ssid.equals("null") || ssid.contains("加载中")) {
-            status.append("❌ SSID: 系统占位值或未获取\n");
+        if (ssid.equals(PLACEHOLDER_SSID) || ssid.equals("null") || ssid.contains("加载中") || ssid.contains("❌")) {
+            status.append("❌ SSID: 未hook (" + ssid + ")\n");
             allSpoofed = false;
         } else {
-            status.append("✅ SSID: 已获取 (" + ssid + ")\n");
+            status.append("✅ SSID: " + ssid + "\n");
         }
 
         // 检查 BSSID
-        if (bssid.equals(PLACEHOLDER_MAC) || bssid.equals("null") || bssid.contains("加载中")) {
-            status.append("❌ BSSID: 系统占位值或未获取\n");
+        if (bssid.equals(PLACEHOLDER_MAC) || bssid.equals("null") || bssid.contains("加载中") || bssid.contains("❌")) {
+            status.append("❌ BSSID: 未hook (" + bssid + ")\n");
             allSpoofed = false;
         } else {
-            status.append("✅ BSSID: 已获取 (" + bssid + ")\n");
+            status.append("✅ BSSID: " + bssid + "\n");
         }
 
         // 检查 MAC
-        if (mac.equals(PLACEHOLDER_MAC) || mac.equals("null") || mac.contains("加载中")) {
-            status.append("❌ MAC: 系统占位值或未获取\n");
+        if (mac.equals(PLACEHOLDER_MAC) || mac.equals("null") || mac.contains("加载中") || mac.contains("❌")) {
+            status.append("❌ MAC: 未hook (" + mac + ")\n");
             allSpoofed = false;
         } else {
-            status.append("✅ MAC: 已获取 (" + mac + ")\n");
+            status.append("✅ MAC: " + mac + "\n");
+        }
+
+        // 检查 IP
+        if (ip.equals("0.0.0.0") || ip.equals("null") || ip.contains("加载中") || ip.contains("❌")) {
+            status.append("❌ IP: 未hook (" + ip + ")\n");
+            allSpoofed = false;
+        } else {
+            status.append("✅ IP: " + ip + "\n");
         }
 
         // 检查 sysfs MAC
         if (sysMac.equals("无法读取") || sysMac.contains("❌")) {
             status.append("⚠️ sysfs MAC: 无法读取\n");
-        } else if (sysMac.equals(PLACEHOLDER_MAC) || sysMac.equals("02:00:00:00:00:00")) {
-            status.append("✅ sysfs MAC: 已hook (返回占位值)\n");
         } else if (sysMac.equals("AA:BB:CC:DD:EE:FF")) {
-            status.append("✅ sysfs MAC: 已hook (返回伪造值)\n");
+            status.append("✅ sysfs MAC: " + sysMac + "\n");
         } else {
-            // 检查是否与BSSID/MAC一致（说明hook生效）
             String normalizedSysMac = sysMac.replace(":", "").replace("-", "").toUpperCase();
             String normalizedBssid = bssid.replace(":", "").replace("-", "").toUpperCase();
             String normalizedMac = mac.replace(":", "").replace("-", "").toUpperCase();
 
             if (normalizedSysMac.equals(normalizedBssid) || normalizedSysMac.equals(normalizedMac)) {
-                status.append("✅ sysfs MAC: 已hook (与BSSID/MAC一致)\n");
+                status.append("✅ sysfs MAC: " + sysMac + "\n");
             } else {
-                status.append("⚠️ sysfs MAC: 暴露真实值 (" + sysMac + ")\n");
-                allSpoofed = false;
+                status.append("⚠️ sysfs MAC: 真实值 (" + sysMac + ")\n");
             }
-        }
-
-        // 检查各层一致性
-        status.append("\n📊 一致性检查:\n");
-        String normalizedBssid = bssid.replace(":", "").replace("-", "").toUpperCase();
-        String normalizedMac = mac.replace(":", "").replace("-", "").toUpperCase();
-        String normalizedSysMac = sysMac.replace(":", "").replace("-", "").toUpperCase();
-
-        if (normalizedBssid.equals(normalizedMac)) {
-            status.append("✅ BSSID = MAC (一致)\n");
-        } else {
-            status.append("⚠️ BSSID ≠ MAC (不一致)\n");
-        }
-
-        if (normalizedBssid.equals(normalizedSysMac) || normalizedMac.equals(normalizedSysMac)) {
-            status.append("✅ App层 = sysfs层 (一致)\n");
-        } else {
-            status.append("⚠️ App层 ≠ sysfs层 (不一致)\n");
         }
 
         // 总结
         status.append("\n");
-        if (allSpoofed && normalizedBssid.equals(normalizedMac)) {
-            status.append("🎉 WifiSpoof 模块已生效！\n");
-            status.append("所有层返回的WiFi信息一致");
-        } else if (allSpoofed) {
-            status.append("✅ WifiSpoof 模块可能已生效\n");
-            status.append("请检查BSSID和MAC是否设置为相同值");
+        if (allSpoofed) {
+            status.append("🎉 WifiSpoof 已生效！\n");
         } else {
-            status.append("⚠️ 部分检测未通过\n");
-            status.append("请检查 LSPosed 作用域设置");
+            status.append("⚠️ 部分未hook\n");
+            status.append("请检查 LSPosed 作用域\n");
+            status.append("确保 WifiDetector 在作用域中");
         }
 
         tvStatus.setText(status.toString());
