@@ -328,8 +328,13 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder status = new StringBuilder();
         boolean allSpoofed = true;
 
-        // 检查 SSID
+        // 获取各层的值
         String ssid = tvAppSsid.getText().toString().replace("SSID: ", "");
+        String bssid = tvAppBssid.getText().toString().replace("BSSID: ", "");
+        String mac = tvAppMac.getText().toString().replace("MAC: ", "");
+        String sysMac = tvSysMac.getText().toString().replace("sysfs MAC: ", "");
+
+        // 检查 SSID
         if (ssid.equals(PLACEHOLDER_SSID) || ssid.equals("null") || ssid.contains("加载中")) {
             status.append("❌ SSID: 系统占位值或未获取\n");
             allSpoofed = false;
@@ -338,7 +343,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 检查 BSSID
-        String bssid = tvAppBssid.getText().toString().replace("BSSID: ", "");
         if (bssid.equals(PLACEHOLDER_MAC) || bssid.equals("null") || bssid.contains("加载中")) {
             status.append("❌ BSSID: 系统占位值或未获取\n");
             allSpoofed = false;
@@ -347,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 检查 MAC
-        String mac = tvAppMac.getText().toString().replace("MAC: ", "");
         if (mac.equals(PLACEHOLDER_MAC) || mac.equals("null") || mac.contains("加载中")) {
             status.append("❌ MAC: 系统占位值或未获取\n");
             allSpoofed = false;
@@ -356,21 +359,54 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 检查 sysfs MAC
-        String sysMac = tvSysMac.getText().toString().replace("sysfs MAC: ", "");
         if (sysMac.equals("无法读取") || sysMac.contains("❌")) {
-            status.append("⚠️ sysfs MAC: 无法读取或已被hook\n");
+            status.append("⚠️ sysfs MAC: 无法读取\n");
+        } else if (sysMac.equals(PLACEHOLDER_MAC) || sysMac.equals("02:00:00:00:00:00")) {
+            status.append("✅ sysfs MAC: 已hook (返回占位值)\n");
+        } else if (sysMac.equals("AA:BB:CC:DD:EE:FF")) {
+            status.append("✅ sysfs MAC: 已hook (返回伪造值)\n");
         } else {
-            status.append("⚠️ sysfs MAC: 暴露真实值 (" + sysMac + ")\n");
-            allSpoofed = false;
+            // 检查是否与BSSID/MAC一致（说明hook生效）
+            String normalizedSysMac = sysMac.replace(":", "").replace("-", "").toUpperCase();
+            String normalizedBssid = bssid.replace(":", "").replace("-", "").toUpperCase();
+            String normalizedMac = mac.replace(":", "").replace("-", "").toUpperCase();
+
+            if (normalizedSysMac.equals(normalizedBssid) || normalizedSysMac.equals(normalizedMac)) {
+                status.append("✅ sysfs MAC: 已hook (与BSSID/MAC一致)\n");
+            } else {
+                status.append("⚠️ sysfs MAC: 暴露真实值 (" + sysMac + ")\n");
+                allSpoofed = false;
+            }
+        }
+
+        // 检查各层一致性
+        status.append("\n📊 一致性检查:\n");
+        String normalizedBssid = bssid.replace(":", "").replace("-", "").toUpperCase();
+        String normalizedMac = mac.replace(":", "").replace("-", "").toUpperCase();
+        String normalizedSysMac = sysMac.replace(":", "").replace("-", "").toUpperCase();
+
+        if (normalizedBssid.equals(normalizedMac)) {
+            status.append("✅ BSSID = MAC (一致)\n");
+        } else {
+            status.append("⚠️ BSSID ≠ MAC (不一致)\n");
+        }
+
+        if (normalizedBssid.equals(normalizedSysMac) || normalizedMac.equals(normalizedSysMac)) {
+            status.append("✅ App层 = sysfs层 (一致)\n");
+        } else {
+            status.append("⚠️ App层 ≠ sysfs层 (不一致)\n");
         }
 
         // 总结
         status.append("\n");
-        if (allSpoofed) {
-            status.append("🎉 WifiSpoof 模块可能已生效！\n");
-            status.append("请对比各层显示的值是否一致");
+        if (allSpoofed && normalizedBssid.equals(normalizedMac)) {
+            status.append("🎉 WifiSpoof 模块已生效！\n");
+            status.append("所有层返回的WiFi信息一致");
+        } else if (allSpoofed) {
+            status.append("✅ WifiSpoof 模块可能已生效\n");
+            status.append("请检查BSSID和MAC是否设置为相同值");
         } else {
-            status.append("⚠️ 检测到系统限制或未hook\n");
+            status.append("⚠️ 部分检测未通过\n");
             status.append("请检查 LSPosed 作用域设置");
         }
 
